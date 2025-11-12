@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.CreationExtras
 import dev.ferp.t3.T3App
 import dev.ferp.t3.domain.model.GameBoard
-import dev.ferp.t3.domain.model.Player
+import dev.ferp.t3.domain.model.GameEngine
 import kotlin.reflect.KClass
 
 data class BoardUiState(
@@ -19,7 +19,8 @@ data class BoardUiState(
 )
 
 class BoardViewModel(
-    private val board: GameBoard
+    private val board: GameBoard,
+    private val engine: GameEngine
 ) : ViewModel() {
 
     var uiState by mutableStateOf(
@@ -27,16 +28,9 @@ class BoardViewModel(
     )
         private set
 
-    private var isCirclePlaying: Boolean = true
-
     fun onCellTap(row: Int, column: Int) {
         if (!board.isCellEmpty(row, column)) return
-        if (isCirclePlaying) {
-            board.place(row, column, Player.CIRCLE)
-        } else {
-            board.place(row, column, Player.CROSS)
-        }
-        isCirclePlaying = !isCirclePlaying
+        engine.play(row, column)
         uiState = uiState.copy(cells = board.cells)
     }
 
@@ -49,7 +43,7 @@ class BoardViewModel(
                 extras: CreationExtras
             ): T {
                 val app = extras[APPLICATION_KEY] as T3App
-                return BoardViewModel(app.board) as T
+                return BoardViewModel(app.board, app.engine) as T
             }
         }
     }

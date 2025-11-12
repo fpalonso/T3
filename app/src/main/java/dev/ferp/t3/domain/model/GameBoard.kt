@@ -13,9 +13,11 @@ class GameBoard(
         return cells[cellIndex] == 0
     }
 
-    fun place(row: Int, column: Int, player: Player) {
+    fun place(row: Int, column: Int, player: Player): Boolean {
+        if (!isCellEmpty(row, column)) return false
         val cellIndex = cellIndexOf(row, column)
         _cells[cellIndex] = if (player == Player.CIRCLE) Cell.CIRCLE else Cell.CROSS
+        return true
     }
 
     private fun cellIndexOf(row: Int, column: Int): Int {
