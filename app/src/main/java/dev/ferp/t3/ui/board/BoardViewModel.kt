@@ -10,12 +10,15 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import dev.ferp.t3.T3App
 import dev.ferp.t3.domain.model.GameBoard
 import dev.ferp.t3.domain.model.GameEngine
+import dev.ferp.t3.domain.model.Player
 import kotlin.reflect.KClass
 
 data class BoardUiState(
     val rows: Int = 0,
     val columns: Int = 0,
-    val cells: List<Int> = emptyList()
+    val cells: List<Int> = emptyList(),
+    val winner: Player? = null,
+    val isGameFinished: Boolean = false
 )
 
 class BoardViewModel(
@@ -31,7 +34,20 @@ class BoardViewModel(
     fun onCellTap(row: Int, column: Int) {
         if (!board.isCellEmpty(row, column)) return
         engine.play(row, column)
-        uiState = uiState.copy(cells = board.cells)
+        uiState = uiState.copy(
+            cells = board.cells,
+            winner = engine.checkWinner(),
+            isGameFinished = engine.isGameFinished
+        )
+    }
+
+    fun restartGame() {
+        engine.restartGame()
+        uiState = uiState.copy(
+            cells = board.cells,
+            winner = null,
+            isGameFinished = false
+        )
     }
 
     companion object {
