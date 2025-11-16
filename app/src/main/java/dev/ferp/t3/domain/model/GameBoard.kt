@@ -18,14 +18,19 @@ class GameBoard(
 
     fun isCellEmpty(row: Int, column: Int): Boolean {
         val cellIndex = cellIndexOf(row, column)
-        return cells[cellIndex] == Cell.EMPTY
+        return _cells[cellIndex] == Cell.EMPTY
     }
 
-    fun place(row: Int, column: Int, player: Player): Boolean {
-        if (!isCellEmpty(row, column)) return false
-        val cellIndex = cellIndexOf(row, column)
+    fun isCellEmpty(index: Int): Boolean = _cells[index] == Cell.EMPTY
+
+    internal fun place(cellIndex: Int, player: Player): Boolean {
+        if (!isCellEmpty(cellIndex) || isGameFinished) return false
         _cells[cellIndex] = if (player == Player.CIRCLE) Cell.CIRCLE else Cell.CROSS
         return true
+    }
+
+    internal fun clearCell(index: Int) {
+        _cells[index] = Cell.EMPTY
     }
 
     fun checkWinner(): Player? {
@@ -93,7 +98,7 @@ class GameBoard(
         else -> null
     }
 
-    private fun cellIndexOf(row: Int, column: Int): Int {
+    internal fun cellIndexOf(row: Int, column: Int): Int {
         return row * columns + column
     }
 
