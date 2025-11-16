@@ -2,7 +2,7 @@ package dev.ferp.t3.domain.model
 
 class GameEngine(
     private val board: GameBoard,
-    initialPlayer: Player = Player.CIRCLE
+    private val initialPlayer: Player = Player.CIRCLE
 ) {
     val isGameFinished: Boolean
         get() = board.isGameFinished
@@ -79,6 +79,10 @@ class GameEngine(
         }
     }
 
-    fun restartGame() = board.clear()
+    fun restartGame() {
+        board.clear()
+        player = initialPlayer
+    }
+
     fun checkWinner() = board.checkWinner()
 }
