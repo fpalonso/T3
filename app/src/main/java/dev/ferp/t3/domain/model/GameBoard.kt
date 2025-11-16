@@ -1,27 +1,32 @@
 package dev.ferp.t3.domain.model
 
+/**
+ * Represents the tic-tac-toe board.
+ *
+ * @param boardSize Number of rows or columns in the board.
+ */
 class GameBoard(
-    val rows: Int = DEFAULT_ROWS,
-    val columns: Int = DEFAULT_COLUMNS
+    private val boardSize: Int = BOARD_SIZE
 ) {
+    val rows = boardSize
+    val columns = boardSize
+
     private val _cells = MutableList(rows * columns) { Cell.EMPTY }
     val cells: List<Int>
         get() = _cells.toList()
 
-    val isGameFinished: Boolean
-        get() = checkWinner() != null || isBoardComplete
+    internal val isGameFinished: Boolean
+        get() = hasWinner || isBoardComplete
 
-    val isBoardComplete: Boolean
+    private val hasWinner: Boolean
+        get() = checkWinner() != null
+
+    private val isBoardComplete: Boolean
         get() = _cells.none { it == Cell.EMPTY }
 
-    fun clear() = _cells.fill(Cell.EMPTY)
+    internal fun clear() = _cells.fill(Cell.EMPTY)
 
-    fun isCellEmpty(row: Int, column: Int): Boolean {
-        val cellIndex = cellIndexOf(row, column)
-        return _cells[cellIndex] == Cell.EMPTY
-    }
-
-    fun isCellEmpty(index: Int): Boolean = _cells[index] == Cell.EMPTY
+    internal fun isCellEmpty(index: Int): Boolean = _cells[index] == Cell.EMPTY
 
     internal fun place(cellIndex: Int, player: Player): Boolean {
         if (!isCellEmpty(cellIndex) || isGameFinished) return false
@@ -33,13 +38,13 @@ class GameBoard(
         _cells[index] = Cell.EMPTY
     }
 
-    fun checkWinner(): Player? {
+    internal fun checkWinner(): Player? {
         var winner: Player?
-        for (row in 0..<rows) {
+        for (row in 0..<boardSize) {
             winner = checkRow(row)
             if (winner != null) return winner
         }
-        for (col in 0..<columns) {
+        for (col in 0..<boardSize) {
             winner = checkColumn(col)
             if (winner != null) return winner
         }
@@ -103,7 +108,10 @@ class GameBoard(
     }
 
     companion object {
-        private const val DEFAULT_ROWS = 3
-        private const val DEFAULT_COLUMNS = 3
+        /**
+         * Number of rows and cols of the board.
+         * Increasing this value will make the Minimax algorithm take too long.
+         */
+        private const val BOARD_SIZE = 3
     }
 }

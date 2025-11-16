@@ -35,6 +35,11 @@ class GameEngine(
             board.place(i, Player.CROSS)
             val score = minimax(isAiTurn = false)
             board.clearCell(i)
+            // Optimization
+            if (score == 1) {
+                play(i)
+                return
+            }
             if (score > maxScore) {
                 maxScore = score
                 bestCellIndex = i
@@ -59,6 +64,10 @@ class GameEngine(
                 board.place(i, Player.CROSS)
                 val score = minimax(isAiTurn = false)
                 board.clearCell(i)
+                // Optimization
+                if (score == 1) {
+                    return 1
+                }
                 if (score > maxScore) {
                     maxScore = score
                 }
@@ -71,6 +80,10 @@ class GameEngine(
                 board.place(i, Player.CIRCLE)
                 val score = minimax(isAiTurn = true)
                 board.clearCell(i)
+                // Optimization
+                if (score == -1) {
+                    return -1
+                }
                 if (score < minScore) {
                     minScore = score
                 }

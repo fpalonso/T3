@@ -32,7 +32,6 @@ class BoardViewModel(
         private set
 
     fun onCellTap(row: Int, column: Int) {
-        if (!board.isCellEmpty(row, column)) return
         engine.play(row, column)
         uiState = uiState.copy(
             cells = board.cells,

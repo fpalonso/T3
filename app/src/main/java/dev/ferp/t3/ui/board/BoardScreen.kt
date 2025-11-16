@@ -98,9 +98,10 @@ private fun BoardScreenContent(
                     }
                 }
         ) {
+            val cellSize = (size.width / state.columns).toInt()
             val board = Board(
-                cellSize = (size.width / state.columns).toInt(),
-                cellPadding = 24.dp
+                cellSize = cellSize,
+                cellPadding = (0.25 * cellSize).toInt().toDp()
             )
             val right = board.cellSize * state.columns * sizePct
             val bottom = board.cellSize * state.rows * sizePct
